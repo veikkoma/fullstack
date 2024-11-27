@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Statistics from './Statistics'; // new file to statistics - make code clean and more readable!
+import Button from './Button'; // Button file! 
 
 const App = () => {
   const [good, setGood] = useState(0);
