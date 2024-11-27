@@ -6,6 +6,7 @@ const Statistics = ({ good, neutral, bad }) => {
     return (
       <div>
         <h2>Statistics</h2>
+        {/* Allready done 1.9 part */}
         {total === 0 ? (
           <p>no feedback</p>
         ) : (
