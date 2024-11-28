@@ -40,19 +40,22 @@ const App = () => {
     setVotes(copy);
   };
 
+  // Most voted - const!
+  const mostVotedIndex = votes.indexOf(Math.max(...votes));
+
   return (
     <div>
       <h1>Unicafe - give feedback</h1>
-
-      {/* feedback clicks*/}
+  
+      {/* Feedback clicks */}
       <Button text="good" handleClick={() => setGood(good + 1)} />
       <Button text="neutral" handleClick={() => setNeutral(neutral + 1)} />
       <Button text="bad" handleClick={() => setBad(bad + 1)} />
-
-      {/* Statistics components! */}
+  
+      {/* Statistics components */}
       <Statistics good={good} neutral={neutral} bad={bad} />
-
-      {/* Anecdotes data! */}
+  
+      {/* Anecdotes data */}
       <hr />
       <h1>Anecdotes</h1>
       <h2>Anecdote of the day</h2>
@@ -60,8 +63,24 @@ const App = () => {
       <p>has {votes[selected]} votes</p>
       <Button text="Vote" handleClick={voteAnecdote} />
       <Button text="Next anecdote" handleClick={selectRandomAnecdote} />
+  
+      {/* Most Voted Anecdote Section */}
+      <div className="most-voted-section">
+        <h2>Most Voted Anecdote</h2>
+        {votes[mostVotedIndex] > 0 ? (
+          <div className="highlighted-anecdote">
+            <p className="anecdote">"{anecdotes[mostVotedIndex]}"</p>
+            <p className="vote-count">
+              Has <strong>{votes[mostVotedIndex]}</strong> votes
+            </p>
+          </div>
+        ) : (
+          <p className="no-votes">No votes yet</p>
+        )}
+      </div>
     </div>
   );
-};
+}
 
 export default App;
+
