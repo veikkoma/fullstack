@@ -12,6 +12,12 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
 
+  // Check for duplicates -  also notice upper and lower case letters
+  if (persons.some((person) => person.name.toLowerCase() === newName.toLowerCase())) {
+    alert(`${newName} is already added to the phonebook!`);
+    return;
+  }
+
     const newPerson = {
       name: newName
     };
