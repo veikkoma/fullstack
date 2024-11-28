@@ -1,11 +1,16 @@
+/* add more console logs - ensure total sum */
 const Total = ({ parts }) => {
-    const totalExercises = parts.reduce((sum, part) => sum + part.exercises, 0);
-    console.log('Total component:', totalExercises);
+    const totalExercises = parts.reduce((sum, part) => {
+      console.log('Current sum:', sum); // sum console log
+      console.log('Current part added:', part); // current part
+      return sum + part.exercises;
+    }, 0);
+  
+    console.log('Final total of exercises:', totalExercises);
   
     return (
       <p>
-        {/* Make the bold text as in the example */}
-        <b>total of {totalExercises} exercises</b>
+        <strong>total of {totalExercises} exercises</strong>
       </p>
     );
   };
