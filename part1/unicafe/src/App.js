@@ -22,6 +22,7 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0)); //Votes - first fill with 0!
 
   // Random select anecdote! 
   const selectRandomAnecdote = () => {
@@ -30,6 +31,13 @@ const App = () => {
       randomIndex = Math.floor(Math.random() * anecdotes.length);
     } while (randomIndex === selected);
     setSelected(randomIndex);
+  };
+    
+  // Add vote to chosen index
+  const voteAnecdote = () => {
+    const copy = [...votes];
+    copy[selected] += 1;
+    setVotes(copy);
   };
 
   return (
@@ -49,6 +57,8 @@ const App = () => {
       <h1>Anecdotes</h1>
       <h2>Anecdote of the day</h2>
       <p>{anecdotes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
+      <Button text="Vote" handleClick={voteAnecdote} />
       <Button text="Next anecdote" handleClick={selectRandomAnecdote} />
     </div>
   );
