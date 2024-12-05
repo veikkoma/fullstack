@@ -29,35 +29,52 @@ const App = () => {
   // Add new person
   const addPerson = (event) => {
     event.preventDefault();
-    console.log('Attempting to add person:', newName, newNumber); // Debug: Syötetyt tiedot
+    console.log('Trying to add person:', newName, newNumber);
   
-    if (isDuplicate(newName, persons)) {
-      alert(`${newName} is already added to the phonebook!`);
-      return;
+    // Check if name already exists
+    const existingPerson = persons.find((person) => person.name === newName);
+  
+    if (existingPerson) {
+      const updatedPerson = { ...existingPerson, number: newNumber };
+      
+      // Show a confirmation dialog! when name already exists - doesn't react to upper/lower case differences
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`)) {
+        axios
+          .put(`http://localhost:3001/persons/${existingPerson.id}`, updatedPerson)
+          .then((response) => {
+            console.log('Updated person:', response.data);
+            setPersons(persons.map((person) =>
+              person.id === existingPerson.id ? response.data : person
+            ));
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch((error) => {
+            console.error('Error updating person:', error);
+          });
+      }
+    } else {
+      // If name not found, create a new person
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+      };
+  
+      // Post the new person to the server
+      axios
+        .post('http://localhost:3001/persons', newPerson)
+        .then((response) => {
+          console.log('Added person:', response.data);
+          setPersons(persons.concat(response.data)); 
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch((error) => {
+          console.error('Error adding person:', error);
+        });
     }
-
-    // Generate a new IDs
-    const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
-    const newId = maxId + 1;
+  };
   
-    const newPerson = {
-      id: newId,
-      name: newName,
-      number: newNumber,
-    };
-  
-    axios
-    .post('http://localhost:3001/persons', newPerson) 
-    .then((response) => {
-      console.log('Person added to server:', response.data);
-      setPersons(persons.concat(response.data)); 
-      setNewName('');
-      setNewNumber('');
-    })
-    .catch((error) => {
-      console.error('Error adding person:', error);
-    });
-};
 
   // Handle name change
   const handleNameChange = (event) => setNewName(event.target.value);
