@@ -1,43 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Filter from './FilterData';
 import Persons from './Persons';
 import PersonData from './PersonData';
 import { isDuplicate } from './utils'; // Import the utility function
+import axios from 'axios';
 
 const App = () => {
   // State to keep track of persons
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-30239849' },
-    { name: 'Grace Hopper', number: '044-21233435' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' },
-  ]);
+  const [persons, setPersons] = useState([]); // Initialize with an empty array
 
   // States for new person's name, number, and filter
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
 
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then((response) => {
+        console.log('Fetched persons from the server:', response.data);
+        setPersons(response.data)
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+      });
+    }, []);;
+
   // Add new person
   const addPerson = (event) => {
     event.preventDefault();
-
-    // Use the utility function to check for duplicates
+    console.log('Attempting to add person:', newName, newNumber); // Debug: Syötetyt tiedot
+  
     if (isDuplicate(newName, persons)) {
       alert(`${newName} is already added to the phonebook!`);
       return;
     }
 
+    // Generate a new IDs
+    const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
+    const newId = maxId + 1;
+  
     const newPerson = {
+      id: newId,
       name: newName,
       number: newNumber,
     };
-
-    setPersons(persons.concat(newPerson));
-    console.log('Updated persons list:', persons.concat(newPerson));
-    setNewName('');
-    setNewNumber('');
-  };
+  
+    axios
+    .post('http://localhost:3001/persons', newPerson) 
+    .then((response) => {
+      console.log('Person added to server:', response.data);
+      setPersons(persons.concat(response.data)); 
+      setNewName('');
+      setNewNumber('');
+    })
+    .catch((error) => {
+      console.error('Error adding person:', error);
+    });
+};
 
   // Handle name change
   const handleNameChange = (event) => setNewName(event.target.value);
