@@ -4,6 +4,7 @@ import Persons from './Persons';
 import PersonData from './PersonData';
 import { isDuplicate } from './utils'; // Import the utility function
 import axios from 'axios';
+import personsbook from './services/personsbook';
 
 const App = () => {
   // State to keep track of persons
@@ -15,16 +16,16 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => {
-        console.log('Fetched persons from the server:', response.data);
-        setPersons(response.data)
+    personsbook
+      .getAll()
+      .then((initialPersons) => {
+        console.log('Fetched persons to the server:', initialPersons);
+        setPersons(initialPersons);
       })
       .catch((error) => {
-        console.log('Error:', error);
+        console.error('Error', error);
       });
-    }, []);;
+  }, []);
 
   // Add new person
   const addPerson = (event) => {
@@ -39,12 +40,12 @@ const App = () => {
       
       // Show a confirmation dialog! when name already exists - doesn't react to upper/lower case differences
       if (window.confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`)) {
-        axios
-          .put(`http://localhost:3001/persons/${existingPerson.id}`, updatedPerson)
-          .then((response) => {
-            console.log('Updated person:', response.data);
+        personsbook
+          .update(existingPerson.id, updatedPerson)
+          .then((returnedPerson) => {
+            console.log('Updated person:', returnedPerson);
             setPersons(persons.map((person) =>
-              person.id === existingPerson.id ? response.data : person
+              person.id === existingPerson.id ? returnedPerson : person
             ));
             setNewName('');
             setNewNumber('');
@@ -54,18 +55,13 @@ const App = () => {
           });
       }
     } else {
-      // If name not found, create a new person
-      const newPerson = {
-        name: newName,
-        number: newNumber,
-      };
+      const newPerson = { name: newName, number: newNumber };
   
-      // Post the new person to the server
-      axios
-        .post('http://localhost:3001/persons', newPerson)
-        .then((response) => {
-          console.log('Added person:', response.data);
-          setPersons(persons.concat(response.data)); 
+      personsbook
+        .create(newPerson)
+        .then((returnedPerson) => {
+          console.log('Added person:', returnedPerson);
+          setPersons(persons.concat(returnedPerson));
           setNewName('');
           setNewNumber('');
         })
