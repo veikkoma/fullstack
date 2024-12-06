@@ -71,6 +71,20 @@ const App = () => {
     }
   };
   
+  // Delete person
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personsbook
+        .remove(id)
+        .then(() => {
+          console.log(`Deleted person with id: ${id}`);
+          setPersons(persons.filter((person) => person.id !== id)); // update the state to remove the deleted person
+        })
+        .catch((error) => {
+          console.error(`Error deleting person:`, error);
+        });
+    }
+  };
 
   // Handle name change
   const handleNameChange = (event) => setNewName(event.target.value);
@@ -101,8 +115,8 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons} />
-    </div>
+      <Persons persons={filteredPersons} deletePerson={deletePerson} />
+      </div>
   );
 };
 
