@@ -72,10 +72,23 @@ const App = () => {
         })
         .catch((error) => {
           console.error('Error updating person:', error);
+
+          if (error.response && error.response.status === 404) {
+            showNotification(
+              `Information of ${newName} has already been removed from the server.`,
+              'error'
+            );
+            setPersons(persons.filter((person) => person.id !== existingPerson.id));
+          } else {
+            showNotification(
+              `Failed to update ${newName}'s number. Please try again later.`,
+              'error'
+            );
+          }
         });
-      }
-    } else {
-      const newPerson = { name: newName, number: newNumber };
+    }
+  } else {
+    const newPerson = { name: newName, number: newNumber };
   
       personsbook
         .create(newPerson)

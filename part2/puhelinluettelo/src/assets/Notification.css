@@ -10,9 +10,11 @@
   
   .notification.error {
     color: red;
+    background: lightpink;
   }
   
   .notification.success {
     color: green;
+    background: lightgreen;
   }
   
