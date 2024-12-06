@@ -13,9 +13,12 @@ const create = async (newPerson) => {
 };
 
 const update = async (id, updatedPerson) => {
-  const response = await axios.put(`${baseUrl}/${id}`, updatedPerson);
-  return response.data;
-};
+    await axios.delete(`${baseUrl}/${id}`); 
+    const response = await axios.post(baseUrl, updatedPerson);
+    return response.data;
+  };
+  
+  
 
 const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`);

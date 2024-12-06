@@ -41,18 +41,20 @@ const App = () => {
       // Show a confirmation dialog! when name already exists - doesn't react to upper/lower case differences
       if (window.confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`)) {
         personsbook
-          .update(existingPerson.id, updatedPerson)
-          .then((returnedPerson) => {
-            console.log('Updated person:', returnedPerson);
-            setPersons(persons.map((person) =>
+        .update(existingPerson.id, updatedPerson)
+        .then((returnedPerson) => {
+          console.log('Updated person:', returnedPerson);
+          setPersons(
+            persons.map((person) =>
               person.id === existingPerson.id ? returnedPerson : person
-            ));
-            setNewName('');
-            setNewNumber('');
-          })
-          .catch((error) => {
-            console.error('Error updating person:', error);
-          });
+            )
+          );
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch((error) => {
+          console.error('Error updating person:', error);
+        });
       }
     } else {
       const newPerson = { name: newName, number: newNumber };
