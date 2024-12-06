@@ -3,25 +3,28 @@ import axios from "axios";
 
 const WeatherDetails = ({ capital }) => {
   const [weather, setWeather] = useState(null);
-  const api_key = process.env.REACT_APP_WEATHER_API_KEY; // Päivitetty
+  const api_key = process.env.REACT_APP_WEATHER_API_KEY; 
 
   useEffect(() => {
+    // For debugging
+    console.log("API Key:", api_key);
+    console.log("Capital:", capital);
+  
     if (capital) {
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`;
+      console.log("Weather URL:", weatherUrl);
+  
       axios
         .get(weatherUrl)
         .then((response) => {
           setWeather(response.data);
+          console.log("Weather data:", response.data);
         })
         .catch((error) => {
           console.error("Error fetching weather data:", error);
         });
     }
   }, [capital, api_key]);
-
-  if (!weather) {
-    return <p>Loading weather data...</p>;
-  }
 
   return (
     <div>
