@@ -14,6 +14,7 @@ const App = () => {
       .get("https://studies.cs.helsinki.fi/restcountries/api/all")
       .then((response) => {
         setCountries(response.data);
+        console.log("Fetched Countries:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching countries:", error);
@@ -27,7 +28,6 @@ const App = () => {
     const filtered = countries.filter((country) =>
       country.name.common.toLowerCase().includes(query)
     );
-
     setFilteredCountries(filtered);
   };
 

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const WeatherDetails = ({ capital }) => {
-  const [weather, setWeather] = useState(null);
-  const api_key = process.env.REACT_APP_WEATHER_API_KEY; // Päivitetty
 
+const Details = ({ country }) => {
+  const [weather, setWeather] = useState(null);
+  const api_key = process.env.REACT_APP_WEATHER_API_KEY;
+
+  // Fetch the weather data for the country's capital city
   useEffect(() => {
+    const capital = country.capital?.[0];
     if (capital) {
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`;
       axios
@@ -17,30 +20,54 @@ const WeatherDetails = ({ capital }) => {
           console.error("Error fetching weather data:", error);
         });
     }
-  }, [capital, api_key]);
-
-  if (!weather) {
-    return <p>Loading weather data...</p>;
-  }
+  }, [country.capital, api_key]);
 
   return (
     <div>
-      <h3>Weather in {capital}</h3>
+      <h2>{country.name.common}</h2>
       <p>
-        <strong>Temperature:</strong> {weather.main.temp} °C
+        <strong>Capital:</strong> {country.capital?.[0] || "N/A"}
       </p>
       <p>
-        <strong>Condition:</strong> {weather.weather[0].description}
+        <strong>Population:</strong> {country.population.toLocaleString()} people
       </p>
+      <p>
+        <strong>Area:</strong> {country.area.toLocaleString()} km²
+      </p>
+      <h3>Languages</h3>
+      <ul>
+        {Object.values(country.languages).map((language) => (
+          <li key={language}>{language}</li>
+        ))}
+      </ul>
       <img
-        src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-        alt="Weather icon"
+        src={country.flags.png}
+        alt={`Flag of ${country.name.common}`}
+        style={{ width: "200px" }}
       />
-      <p>
-        <strong>Wind:</strong> {weather.wind.speed} m/s
-      </p>
+
+      {weather ? (
+        <div>
+          <h3>Weather in {country.capital?.[0]}</h3>
+          <p>
+            <strong>Temperature:</strong> {weather.main.temp} °C
+          </p>
+          <p>
+            <strong>Condition:</strong> {weather.weather[0].description}
+          </p>
+          <img
+            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+            alt="Weather icon"
+          />
+          <p>
+            <strong>Wind:</strong> {weather.wind.speed} m/s
+          </p>
+        </div>
+      ) : (
+        <p>Loading weather data...</p>
+      )}
     </div>
   );
 };
 
-export default WeatherDetails;
+export default Details;
