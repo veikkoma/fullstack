@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const api = axios.create({ baseURL: 'http://localhost:3001/api/persons' });
+const api = axios.create({ baseURL: 'https://fullstack-backend-5fyg.onrender.com/api/persons' });
 
 const personsService = {
   getAll: () => api.get('/').then(response => response.data),
